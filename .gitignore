@@ -1,0 +1,4 @@
+#VS files
+*.vcxproj*
+bin
+x64
