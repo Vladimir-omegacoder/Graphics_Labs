@@ -4,6 +4,24 @@
 
 
 
+void move_triangle(sf::CircleShape& triangle, int& a, int startx, int starty, int s, int vector)
+{
+    if (a == 360) a = 0;
+
+    if (vector <= 0) vector = -1;
+    else vector = 1;
+
+    float x, y;
+
+    x = startx + round(100 * cos(a * 3.14 / 180));
+    y = starty + round(100 * sin(a * 3.14 / 180)) * vector;
+
+    a += s;
+
+    triangle.setPosition(x, y);
+}
+
+
 int main() {
     // Создаем окно SFML
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Static and Dynamic Objects");
@@ -12,14 +30,17 @@ int main() {
 
     // Создаем статический круг
     sf::CircleShape staticCircle(50); // радиус 50 пикселей
-    staticCircle.setFillColor(sf::Color::Blue);
+    staticCircle.setFillColor(sf::Color(240, 128, 128));
     staticCircle.setPosition(100, 100); // позиция на экране
+
+
 
     // Создаем динамический треугольник
     sf::CircleShape dynamicTriangle(30, 3); // стороны 30 пикселей
-    dynamicTriangle.setFillColor(sf::Color::Red);
+    dynamicTriangle.setFillColor(sf::Color(219, 112, 147));
     dynamicTriangle.setPosition(50, 50); // позиция на экране
     dynamicTriangle.setOrigin(25, 25);  //центр треугольника
+
 
 
     // Создаем статическую звездочку
@@ -37,13 +58,13 @@ int main() {
     star.setPoint(7, sf::Vector2f(475, 175));
     
 
-    star.setFillColor(sf::Color::Yellow); 
+    star.setFillColor(sf::Color(255, 240, 245));
     star.setOutlineThickness(8); // устанавливаем толщину контура звездочки
-    star.setOutlineColor(sf::Color::Blue); // устанавливаем цвет контура
+    star.setOutlineColor(sf::Color(255, 182, 193)); // устанавливаем цвет контура
+
 
 
     int a = 1;
-    float x, y;
 
     while (window.isOpen()) 
     {
@@ -56,17 +77,15 @@ int main() {
         }
 
         
-        //Смкщкние координат треугольника
-        x = 300 + round(100 * cos(a * 3.14 / 180));
-        y = 400 + round(100 * sin(a * 3.14 / 180)) * -1;
+        //Смещение координат треугольника 
+        move_triangle(dynamicTriangle, a, 175, 400, 2, -1);
+
         
-        a+=2;
-
-        dynamicTriangle.setPosition(x, y);
-
 
         //Очищаем и выводим
-        window.clear();
+
+        window.clear(sf::Color(255, 250, 240));
+
         window.draw(staticCircle);
         window.draw(star);
         window.draw(dynamicTriangle);
@@ -75,6 +94,3 @@ int main() {
 
     return 0;
 }
-
-
-
