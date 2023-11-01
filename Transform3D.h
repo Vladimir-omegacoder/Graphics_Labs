@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "Vector4.h"
 #include <iostream>
 
 
@@ -45,3 +46,6 @@ public:
 
 
 Transform3D operator*(const Transform3D& left, const Transform3D& right);
+
+
+Vector4f operator*(const Vector4f& left, const Transform3D& right);

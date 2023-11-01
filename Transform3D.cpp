@@ -4,6 +4,7 @@
 
 
 
+
 Transform3D operator*(const Transform3D& left, const Transform3D& right)
 {
 
@@ -29,12 +30,27 @@ Transform3D operator*(const Transform3D& left, const Transform3D& right)
 	res[14] = left[12] * right[2] + left[13] * right[6] + left[14] * right[10] + left[15] * right[14];
 	res[15] = left[12] * right[3] + left[13] * right[7] + left[14] * right[11] + left[15] * right[15];
 
-	for (size_t i = 0; i < 16; i++)
-	{
-		std::cout << res[i] << '\t';
-		if ((i + 1) % 4 == 0) std::cout << '\n';
-	}
+	return res;
+
+}
+
+
+
+
+
+Vector4f operator*(const Vector4f& left, const Transform3D& right)
+{
+	Vector4f res;
+
+	res.x = left.x * right[0] + left.y * right[4] + left.z * right[8] + right[12];
+	res.y = left.x * right[1] + left.y * right[5] + left.z * right[9] + right[13];
+	res.z = left.x * right[2] + left.y * right[6] + left.z * right[10] + right[14];
+	res.w = left.x * right[3] + left.y * right[7] + left.z * right[11] + right[15];
+
+	std::cout << res.x << ' ' << res.y << ' ' << res.z << ' ' << res.w << '\n';
 
 	return res;
 
 }
+
+
