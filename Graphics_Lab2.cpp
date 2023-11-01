@@ -1,11 +1,15 @@
 ﻿#include <iostream>
 #include "SFML/Graphics.hpp"
+#include "Letter_3d.h"
 
 
 
 
 int main()
 {
+
+	int c_letter[4]{ 1, 4, 2, 3 };
+	Letter_3d(4, c_letter);
 
     sf::RenderWindow main_window(sf::VideoMode(800, 600), "Graphics window");
 

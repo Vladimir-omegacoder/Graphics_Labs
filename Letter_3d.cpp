@@ -47,3 +47,21 @@ Letter_3d::~Letter_3d()
 {
 	delete[] m_blocks;
 }
+
+
+
+void Letter_3d::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+
+
+
+	//sf::VertexArray points;
+
+	/*sf::VertexArray points(sf::LinesStrip, m_size);
+
+	for (int i = 0; i < m_size; i++)
+	{
+		points[i] = sf::Vertex(sf::Vector2f(m_blocks[i] % field_width * basic_scale, m_blocks[i] / field_height * basic_scale));
+	}*/
+
+}
