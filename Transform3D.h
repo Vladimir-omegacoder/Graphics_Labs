@@ -50,6 +50,9 @@ public:
 	void translate(float x, float y, float z);
 	void translate(const sf::Vector3f& offset);
 
+	void scale(float scale_x, float scale_y, float scale_z);
+	void scale(const sf::Vector3f& factors);
+
 };
 
 

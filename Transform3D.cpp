@@ -121,3 +121,31 @@ void Transform3D::translate(const sf::Vector3f& offset)
 	(*this) = (*this) * translation;
 
 }
+
+
+
+void Transform3D::scale(float scale_x, float scale_y, float scale_z)
+{
+
+	Transform3D scaling;
+
+	scaling[0] = scale_x;
+	scaling[5] = scale_y;
+	scaling[10] = scale_z;
+
+	(*this) = (*this) * scaling;
+
+}
+
+void Transform3D::scale(const sf::Vector3f& factors)
+{
+
+	Transform3D scaling;
+
+	scaling[0] = factors.x;
+	scaling[5] = factors.y;
+	scaling[10] = factors.z;
+
+	(*this) = (*this) * scaling;
+
+}
