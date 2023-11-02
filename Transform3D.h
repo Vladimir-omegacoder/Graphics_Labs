@@ -3,6 +3,8 @@
 #include "Vector4.h"
 #include <iostream>
 
+#define PI 3.14159265359f
+
 
 
 class Transform3D
@@ -10,7 +12,7 @@ class Transform3D
 
 private:
 
-	float matrix[16]{};
+	float matrix[16]{ 1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1 };
 
 
 public:
@@ -40,6 +42,10 @@ public:
 	}
 
 	
+
+	void rotate_x(float angle);
+	void rotate_y(float angle);
+	void rotate_z(float angle);
 
 };
 

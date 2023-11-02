@@ -36,8 +36,6 @@ Transform3D operator*(const Transform3D& left, const Transform3D& right)
 
 
 
-
-
 Vector4f operator*(const Vector4f& left, const Transform3D& right)
 {
 	Vector4f res;
@@ -47,10 +45,50 @@ Vector4f operator*(const Vector4f& left, const Transform3D& right)
 	res.z = left.x * right[2] + left.y * right[6] + left.z * right[10] + right[14];
 	res.w = left.x * right[3] + left.y * right[7] + left.z * right[11] + right[15];
 
-	std::cout << res.x << ' ' << res.y << ' ' << res.z << ' ' << res.w << '\n';
-
 	return res;
 
 }
 
 
+
+void Transform3D::rotate_x(float angle)
+{
+
+	Transform3D rotation;
+
+	angle = PI / 180 * -angle; // convert deg to rad
+
+	rotation[5] = rotation[10] = cos(angle);
+	rotation[6] = -(rotation[9] = sin(angle));
+
+	(*this) = (*this) * rotation;
+
+}
+
+void Transform3D::rotate_y(float angle)
+{
+
+	Transform3D rotation;
+
+	angle = PI / 180 * -angle; // convert deg to rad
+
+	rotation[0] = rotation[10] = cos(angle);
+	rotation[8] = -(rotation[2] = sin(angle));
+
+	(*this) = (*this) * rotation;
+
+}
+
+void Transform3D::rotate_z(float angle)
+{
+
+	Transform3D rotation;
+
+	angle = PI / 180 * -angle; // convert deg to rad
+
+	rotation[0] = rotation[5] = cos(angle);
+	rotation[1] = -(rotation[4] = sin(angle));
+
+	(*this) = (*this) * rotation;
+
+}
