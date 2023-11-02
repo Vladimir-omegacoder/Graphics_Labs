@@ -38,6 +38,7 @@ Transform3D operator*(const Transform3D& left, const Transform3D& right)
 
 Vector4f operator*(const Vector4f& left, const Transform3D& right)
 {
+
 	Vector4f res;
 
 	res.x = left.x * right[0] + left.y * right[4] + left.z * right[8] + right[12];
@@ -90,5 +91,33 @@ void Transform3D::rotate_z(float angle)
 	rotation[1] = -(rotation[4] = sin(angle));
 
 	(*this) = (*this) * rotation;
+
+}
+
+
+
+void Transform3D::translate(float x, float y, float z)
+{
+	
+	Transform3D translation;
+
+	translation[12] = x;
+	translation[13] = y;
+	translation[14] = z;
+
+	(*this) = (*this) * translation;
+
+}
+
+void Transform3D::translate(const sf::Vector3f& offset)
+{
+
+	Transform3D translation;
+
+	translation[12] = offset.x;
+	translation[13] = offset.y;
+	translation[14] = offset.z;
+
+	(*this) = (*this) * translation;
 
 }

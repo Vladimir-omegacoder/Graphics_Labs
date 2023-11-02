@@ -47,6 +47,9 @@ public:
 	void rotate_y(float angle);
 	void rotate_z(float angle);
 
+	void translate(float x, float y, float z);
+	void translate(const sf::Vector3f& offset);
+
 };
 
 
