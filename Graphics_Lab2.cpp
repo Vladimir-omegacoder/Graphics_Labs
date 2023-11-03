@@ -97,7 +97,7 @@ int main()
 			{
 				main_window.close();
 			}
-
+			
 		}
 
 		main_window.clear();
@@ -106,7 +106,7 @@ int main()
 		{
 			cube.rotate_z(5);
 			cube.rotate_y(5);
-			/*cube.translate(-2, -2, -2);*/
+			//cube.translate(-2, -20, -20);
 			clock.restart();
 		}
 
