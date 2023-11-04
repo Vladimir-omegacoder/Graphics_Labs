@@ -3,6 +3,10 @@
 #include "Transform3D.h"
 #include "Vector4.h"
 #include "Cube.h"
+#include <fstream>
+#include <vector>
+
+#define OBS_DISTANCE 1000
 
 
 
@@ -13,77 +17,69 @@ std::ostream& operator<<(std::ostream& out, const Vector4f& vec)
 	return out << vec.x << ' ' << vec.y << ' ' << vec.z << ' ' << vec.w;
 }
 
+std::istream& operator>>(std::istream& in, sf::Vector2f& vec)
+{
+	return in >> vec.x >> vec.y;
+}
+
+
+
+
+
+sf::VertexArray create_face(sf::Vector2f* points)
+{
+
+	sf::VertexArray face(sf::LineStrip, 4);
+
+	face[0] = points[0];
+	face[1] = points[1];
+	face[2] = points[2];
+	face[3] = points[3];
+
+	//face[0] = points[0];
+	//face[1] = points[1];
+	//face[2] = points[2];
+	//face[3] = points[0];
+	//face[4] = points[3];
+	//face[5] = points[2];
+
+	return face;
+
+}
+
+
+
+
 
 int main()
 {
 
-	Cube cube;
-
-	cube[0] = sf::Vector3f(-1, -1, -1);
-	cube[1] = sf::Vector3f(-1, -1, 1);
-	cube[2] = sf::Vector3f(-1, 1, 1);
-	cube[3] = sf::Vector3f(-1, 1, -1);
-
-	cube[4] = sf::Vector3f(1, -1, -1);
-	cube[5] = sf::Vector3f(1, -1, 1);
-	cube[6] = sf::Vector3f(1, 1, 1);
-	cube[7] = sf::Vector3f(1, 1, -1);
-
-	cube.scale(40, 40, 40);
+	std::ifstream file_input("Coords.txt");
+	if(!file_input.is_open())
+	{
+		throw std::exception("Couldn't open the file");
+	}
 
 
 
-	/*Vector4f v4(5, -2, 7, 1);
+	float letter_thickness = 1.5, letter_scale = 40, letter_distance = 0;
+	std::vector<sf::Vector3f> points;
+	Transform3D letter_tr;
 
-	Transform3D scale;
+	sf::Vector2f temp;
+	while(file_input >> temp)
+	{
+		points.push_back(sf::Vector3f(temp.x * letter_scale, temp.y * letter_scale, letter_distance));
+		points.push_back(sf::Vector3f(temp.x * letter_scale, temp.y * letter_scale, letter_distance + letter_thickness * letter_scale));
+	}
 
-	scale.scale(2, -2, -2);
-
-	std::cout << v4 * scale << '\n';*/
-
-
-	/*Transform3D m1, m2;
-
-	m1[0] = 15;
-	m1[1] = 98;
-	m1[2] = 2;
-	m1[3] = -42;
-	m1[4] = -5;
-	m1[5] = 0;
-	m1[6] = 32;
-	m1[7] = 87;
-	m1[8] = -2;
-	m1[9] = 13;
-	m1[10] = 1;
-	m1[11] = 76;
-	m1[12] = -23;
-	m1[13] = 8;
-	m1[14] = -15;
-	m1[15] = 24;
-
-	m2[0] = -14;
-	m2[1] = 0;
-	m2[2] = 33;
-	m2[3] = 12;
-	m2[4] = -78;
-	m2[5] = 74;
-	m2[6] = 3;
-	m2[7] = 45;
-	m2[8] = 5;
-	m2[9] = 16;
-	m2[10] = 17;
-	m2[11] = -22;
-	m2[12] = 89;
-	m2[13] = 61;
-	m2[14] = 0;
-	m2[15] = 37;
-
-	v4 * m1;*/
 
 
     sf::RenderWindow main_window(sf::VideoMode(800, 600), "Graphics window");
 
 	sf::Clock clock;
+
+
 
 	while (main_window.isOpen())
 	{
@@ -97,20 +93,86 @@ int main()
 			{
 				main_window.close();
 			}
+
+			if (main_event.type == sf::Event::Closed)
+			{
+				main_window.close();
+			}
 			
 		}
 
-		main_window.clear();
+
+
+
 
 		if (clock.getElapsedTime().asMilliseconds() > 50)
 		{
-			cube.rotate_z(5);
-			cube.rotate_y(5);
-			//cube.translate(-2, -20, -20);
+			letter_tr.rotate_y(5);
 			clock.restart();
 		}
 
-		main_window.draw(cube);
+
+
+		
+
+		std::vector<sf::Vector2f> projection(points.size());
+		for (size_t i = 0; i < projection.size(); i++)
+		{
+			Vector4f temp = Vector4f(points[i].x, points[i].y, points[i].z, 1) * letter_tr;
+
+			projection[i] = sf::Vector2f(OBS_DISTANCE / (OBS_DISTANCE + temp.z) * temp.x + main_window.getSize().x / 2,
+				OBS_DISTANCE / (OBS_DISTANCE + temp.z) * temp.y + main_window.getSize().y / 2);
+		}
+
+
+
+		main_window.clear();
+
+		sf::Vector2f verticies[4];
+
+		for (size_t i = 0, size = projection.size() - 2; i < size; i+=2)
+		{
+			verticies[0] = projection[i];
+			verticies[1] = projection[i + 2];
+			verticies[2] = projection[i + 3];
+			verticies[3] = projection[i + 1];
+
+			main_window.draw(create_face(verticies));
+		}
+
+		verticies[0] = projection[projection.size()-2];
+		verticies[1] = projection[0];
+		verticies[2] = projection[1];
+		verticies[3] = projection[projection.size() - 1];
+
+		main_window.draw(create_face(verticies));
+
+
+
+		for (size_t i = 0, size = projection.size() - 2; i < size; i+=2)
+		{
+
+			verticies[0] = projection[i];
+			verticies[1] = projection[i + 2];
+			verticies[2] = projection[size - 2 - i];
+			verticies[3] = projection[size - i];
+
+			main_window.draw(create_face(verticies));
+
+
+
+			verticies[0] = projection[i + 1];
+			verticies[1] = projection[i + 3];
+			verticies[2] = projection[size - 1 - i];
+			verticies[3] = projection[size + 1 - i];
+
+			main_window.draw(create_face(verticies));
+
+		}
+		
+
+
+
 
 		main_window.display();
 
