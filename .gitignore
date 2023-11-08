@@ -2,3 +2,4 @@
 *.vcxproj*
 bin
 x64
+*.dll
