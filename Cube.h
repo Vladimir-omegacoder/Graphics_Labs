@@ -3,7 +3,6 @@
 #include "Vector4.h"
 
 #define OBS_DISTANCE 1000
-//#define VIEW_POINT sf::Vector3f(400, 300, 1000)
 
 
 class Cube : public Transform3D, public sf::Drawable

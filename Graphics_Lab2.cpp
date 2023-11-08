@@ -36,13 +36,6 @@ sf::VertexArray create_face(sf::Vector2f* points)
 	face[2] = points[2];
 	face[3] = points[3];
 
-	//face[0] = points[0];
-	//face[1] = points[1];
-	//face[2] = points[2];
-	//face[3] = points[0];
-	//face[4] = points[3];
-	//face[5] = points[2];
-
 	return face;
 
 }
@@ -60,7 +53,7 @@ int main()
 		throw std::exception("Couldn't open the file");
 	}
 
-
+	
 
 	float letter_thickness = 1.5, letter_scale = 40, letter_distance = 0;
 	std::vector<sf::Vector3f> points;
@@ -79,12 +72,15 @@ int main()
 
 	sf::Clock clock;
 
-
+	sf::Vector3f rotation;
+	sf::Vector3f scaling(1, 1, 1);
 
 	while (main_window.isOpen())
 	{
 		
 		sf::Event main_event;
+
+
 
 		while (main_window.pollEvent(main_event))
 		{
@@ -94,9 +90,55 @@ int main()
 				main_window.close();
 			}
 
-			if (main_event.type == sf::Event::Closed)
+			if (main_event.type == sf::Event::KeyPressed)
 			{
-				main_window.close();
+
+				if(main_event.key.code == sf::Keyboard::Right)
+				{
+					rotation.y = 5;
+				}
+				if (main_event.key.code == sf::Keyboard::Left)
+				{
+					rotation.y = -5;
+				}
+				if (main_event.key.code == sf::Keyboard::Up)
+				{
+					rotation.x = 5;
+				}
+				if (main_event.key.code == sf::Keyboard::Down)
+				{
+					rotation.x = -5;
+				}
+
+			}
+
+			if (main_event.type == sf::Event::KeyReleased)
+			{
+
+				if (main_event.key.code == sf::Keyboard::Right)
+				{
+					rotation.y = 0;
+				}
+				if (main_event.key.code == sf::Keyboard::Left)
+				{
+					rotation.y = 0;
+				}
+				if (main_event.key.code == sf::Keyboard::Up)
+				{
+					rotation.x = 0;
+				}
+				if (main_event.key.code == sf::Keyboard::Down)
+				{
+					rotation.x = 0;
+				}
+
+			}
+
+			if(main_event.type == sf::Event::MouseWheelScrolled)
+			{
+				scaling.x += (0.1 * main_event.mouseWheelScroll.delta);
+				scaling.y += (0.1 * main_event.mouseWheelScroll.delta);
+				scaling.z += (0.1 * main_event.mouseWheelScroll.delta);
 			}
 			
 		}
@@ -107,8 +149,17 @@ int main()
 
 		if (clock.getElapsedTime().asMilliseconds() > 50)
 		{
-			letter_tr.rotate_y(5);
+
+			letter_tr.rotate_x(rotation.x);
+			letter_tr.rotate_y(rotation.y);
+			letter_tr.rotate_z(rotation.z);
+
+			letter_tr.scale(scaling);
+
+			scaling.x = scaling.y = scaling.z = 1;
+
 			clock.restart();
+
 		}
 
 
@@ -169,7 +220,7 @@ int main()
 			main_window.draw(create_face(verticies));
 
 		}
-		
+
 
 
 
