@@ -20,8 +20,6 @@ struct Vector4
 };
 
 
-
-
 template struct Vector4<int>;
 template struct Vector4<float>;
 

@@ -27,21 +27,12 @@ int main()
 
 	fin >> G;
 
-	//G[0] = sf::Vector3f(-0.5, 1.5, 0);
-	//G[1] = sf::Vector3f(-0.5, 1.5, 0.5);
-	//G[2] = sf::Vector3f(-0.5, -1, 0);
-	//G[3] = sf::Vector3f(-0.5, -1, 0.5);
-	//G[4] = sf::Vector3f(1, -1, 0);
-	//G[5] = sf::Vector3f(1, -1, 0.5);
-	//G[6] = sf::Vector3f(1, -1.5, 0);
-	//G[7] = sf::Vector3f(1, -1.5, 0.5);
-	//G[8] = sf::Vector3f(-1, -1.5, 0);
-	//G[9] = sf::Vector3f(-1, -1.5, 0.5);
-	//G[10] = sf::Vector3f(-1, 1.5, 0);
-	//G[11] = sf::Vector3f(-1, 1.5, 0.5);
-
 	G.scaling(Vector4f(140, 140, 140));
+
 	G.RotY(45);
+
+
+	//sf::Clock clock;
 
 
 	while (main_window.isOpen())
@@ -58,6 +49,13 @@ int main()
 			}
 
 		}
+
+
+		//if (clock.getElapsedTime().asMilliseconds() > 50)
+		//{
+		//	G.RotY(5);
+		//	clock.restart();
+		//}
 
 
 		main_window.clear();

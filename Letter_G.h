@@ -12,7 +12,6 @@ private:
 	sf::Vector3f peaks[12]{};
 
 
-
 	sf::VertexArray plane(sf::Vector2f* point) const
 	{
 
