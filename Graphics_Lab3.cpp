@@ -56,15 +56,20 @@ int main()
 	
 
 	float letter_thickness = 1.5, letter_scale = 40, letter_distance = 0;
+
 	std::vector<sf::Vector3f> points;
-	Transform3D letter_tr;
+
+	Transform3D local_tr, global_tr; // Local and global transform
+	global_tr.scale(letter_scale, letter_scale, letter_scale);
 
 	sf::Vector2f temp;
 	while(file_input >> temp)
 	{
-		points.push_back(sf::Vector3f(temp.x * letter_scale, temp.y * letter_scale, letter_distance));
-		points.push_back(sf::Vector3f(temp.x * letter_scale, temp.y * letter_scale, letter_distance + letter_thickness * letter_scale));
+		points.push_back(sf::Vector3f(temp.x, temp.y, letter_distance - letter_thickness / 2));
+		points.push_back(sf::Vector3f(temp.x, temp.y, letter_distance + letter_thickness / 2));
 	}
+
+
 
 
 
@@ -72,6 +77,7 @@ int main()
 
 	sf::Clock clock;
 
+	// Transform from input
 	sf::Vector3f rotation;
 	sf::Vector3f scaling(1, 1, 1);
 
@@ -147,14 +153,16 @@ int main()
 
 
 
+		// Applying input values transform
+
 		if (clock.getElapsedTime().asMilliseconds() > 50)
 		{
 
-			letter_tr.rotate_x(rotation.x);
-			letter_tr.rotate_y(rotation.y);
-			letter_tr.rotate_z(rotation.z);
+			local_tr.rotate_x(rotation.x);
+			local_tr.rotate_y(rotation.y);
+			local_tr.rotate_z(rotation.z);
 
-			letter_tr.scale(scaling);
+			global_tr.scale(scaling);
 
 			scaling.x = scaling.y = scaling.z = 1;
 
@@ -166,16 +174,20 @@ int main()
 
 		
 
+		// Projection coordiantes
+
 		std::vector<sf::Vector2f> projection(points.size());
 		for (size_t i = 0; i < projection.size(); i++)
 		{
-			Vector4f temp = Vector4f(points[i].x, points[i].y, points[i].z, 1) * letter_tr;
+			Vector4f temp = Vector4f(points[i].x, points[i].y, points[i].z, 1) * local_tr * global_tr;
 
 			projection[i] = sf::Vector2f(OBS_DISTANCE / (OBS_DISTANCE + temp.z) * temp.x + main_window.getSize().x / 2,
 				OBS_DISTANCE / (OBS_DISTANCE + temp.z) * temp.y + main_window.getSize().y / 2);
 		}
 
 
+
+		// Rendering
 
 		main_window.clear();
 

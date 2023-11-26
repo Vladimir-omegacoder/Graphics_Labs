@@ -57,7 +57,7 @@ void Transform3D::rotate_x(float angle)
 
 	Transform3D rotation;
 
-	angle = PI / 180 * -angle; // convert deg to rad
+	angle = PI / 180 * angle; // convert deg to rad
 
 	rotation[5] = rotation[10] = cos(angle);
 	rotation[6] = -(rotation[9] = sin(angle));
@@ -71,7 +71,7 @@ void Transform3D::rotate_y(float angle)
 
 	Transform3D rotation;
 
-	angle = PI / 180 * -angle; // convert deg to rad
+	angle = PI / 180 * angle; // convert deg to rad
 
 	rotation[0] = rotation[10] = cos(angle);
 	rotation[8] = -(rotation[2] = sin(angle));
@@ -85,7 +85,7 @@ void Transform3D::rotate_z(float angle)
 
 	Transform3D rotation;
 
-	angle = PI / 180 * -angle; // convert deg to rad
+	angle = PI / 180 * angle; // convert deg to rad
 
 	rotation[0] = rotation[5] = cos(angle);
 	rotation[1] = -(rotation[4] = sin(angle));
