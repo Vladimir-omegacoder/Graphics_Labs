@@ -42,10 +42,34 @@ sf::VertexArray create_face(sf::Vector2f* points)
 
 
 
+enum Transform_binds
+{
+
+	NONE = -1,
+
+	ROTATE = sf::Keyboard::R,
+	SCALE = sf::Keyboard::S,
+	TRANSLATE = sf::Keyboard::T,
+
+	TRANSFORM_X = sf::Keyboard::X,
+	TRANSFORM_Y = sf::Keyboard::Y,
+	TRANSFORM_Z = sf::Keyboard::Z,
+
+};
+
 
 
 int main()
 {
+
+	sf::Font info_font;
+	bool font_available = info_font.loadFromFile("calibri.ttf");
+	if (!font_available)
+	{
+		std::cerr << "Unable to load the font\n";
+	}
+	
+	
 
 	std::ifstream file_input("Coords.txt");
 	if(!file_input.is_open())
@@ -60,7 +84,8 @@ int main()
 	std::vector<sf::Vector3f> points;
 
 	Transform3D local_tr, global_tr; // Local and global transform
-	global_tr.scale(letter_scale, letter_scale, letter_scale);
+	Transform3D local_scale;
+	local_tr.scale(letter_scale, letter_scale, letter_scale);
 
 	sf::Vector2f temp;
 	while(file_input >> temp)
@@ -77,9 +102,12 @@ int main()
 
 	sf::Clock clock;
 
+	Transform_binds transform_type = NONE;
+
 	// Transform from input
 	sf::Vector3f rotation;
 	sf::Vector3f scaling(1, 1, 1);
+	sf::Vector3f translation(0, 0, 0);
 
 	while (main_window.isOpen())
 	{
@@ -98,53 +126,115 @@ int main()
 
 			if (main_event.type == sf::Event::KeyPressed)
 			{
+				
+				sf::Keyboard::Key pressed_key = main_event.key.code;
 
-				if(main_event.key.code == sf::Keyboard::Right)
+				switch (pressed_key)
 				{
-					rotation.y = 5;
-				}
-				if (main_event.key.code == sf::Keyboard::Left)
-				{
-					rotation.y = -5;
-				}
-				if (main_event.key.code == sf::Keyboard::Up)
-				{
-					rotation.x = 5;
-				}
-				if (main_event.key.code == sf::Keyboard::Down)
-				{
-					rotation.x = -5;
-				}
 
-			}
+				case ROTATE:
+					transform_type = ROTATE;
+					break;
 
-			if (main_event.type == sf::Event::KeyReleased)
-			{
+				case SCALE:
+					transform_type = SCALE;
+					break;
 
-				if (main_event.key.code == sf::Keyboard::Right)
-				{
-					rotation.y = 0;
-				}
-				if (main_event.key.code == sf::Keyboard::Left)
-				{
-					rotation.y = 0;
-				}
-				if (main_event.key.code == sf::Keyboard::Up)
-				{
-					rotation.x = 0;
-				}
-				if (main_event.key.code == sf::Keyboard::Down)
-				{
-					rotation.x = 0;
+				case TRANSLATE:
+					transform_type = TRANSLATE;
+					break;
+
 				}
 
 			}
 
 			if(main_event.type == sf::Event::MouseWheelScrolled)
 			{
-				scaling.x += (0.1 * main_event.mouseWheelScroll.delta);
-				scaling.y += (0.1 * main_event.mouseWheelScroll.delta);
-				scaling.z += (0.1 * main_event.mouseWheelScroll.delta);
+
+				bool all_transform = true;
+				float k_rotation = 8, k_scaling = 0.1, k_translating = 8;
+
+				switch (transform_type)
+				{
+
+				case ROTATE:
+
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_X)))
+					{
+						rotation.x = (k_rotation * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Y)))
+					{
+						rotation.y = (k_rotation * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Z)))
+					{
+						rotation.z = (k_rotation * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (all_transform)
+					{
+						rotation.x = rotation.y = rotation.z = (k_rotation * main_event.mouseWheelScroll.delta);
+					}
+
+					break;
+
+
+
+				case SCALE:
+
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_X)))
+					{
+						scaling.x += (k_scaling * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Y)))
+					{
+						scaling.y += (k_scaling * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Z)))
+					{
+						scaling.z += (k_scaling * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (all_transform)
+					{
+						scaling.x = scaling.y = scaling.z += (k_scaling * main_event.mouseWheelScroll.delta);
+					}
+
+					break;
+
+
+
+				case TRANSLATE:
+
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_X)))
+					{
+						translation.x = (k_translating * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Y)))
+					{
+						translation.y = (-k_translating * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Z)))
+					{
+						translation.z = (k_translating * main_event.mouseWheelScroll.delta);
+						all_transform = false;
+					}
+					if (all_transform)
+					{
+						translation.x = translation.y = translation.z += (k_translating * main_event.mouseWheelScroll.delta);
+					}
+
+					break;
+
+				}
+
 			}
 			
 		}
@@ -162,9 +252,13 @@ int main()
 			local_tr.rotate_y(rotation.y);
 			local_tr.rotate_z(rotation.z);
 
-			global_tr.scale(scaling);
+			local_scale.scale(scaling);
 
+			global_tr.translate(translation);
+
+			rotation.x = rotation.y = rotation.z = 0;
 			scaling.x = scaling.y = scaling.z = 1;
+			translation.x = translation.y = translation.z = 0;
 
 			clock.restart();
 
@@ -179,7 +273,7 @@ int main()
 		std::vector<sf::Vector2f> projection(points.size());
 		for (size_t i = 0; i < projection.size(); i++)
 		{
-			Vector4f temp = Vector4f(points[i].x, points[i].y, points[i].z, 1) * local_tr * global_tr;
+			Vector4f temp = Vector4f(points[i].x, points[i].y, points[i].z, 1) * local_scale * local_tr * global_tr;
 
 			projection[i] = sf::Vector2f(OBS_DISTANCE / (OBS_DISTANCE + temp.z) * temp.x + main_window.getSize().x / 2,
 				OBS_DISTANCE / (OBS_DISTANCE + temp.z) * temp.y + main_window.getSize().y / 2);
@@ -230,6 +324,60 @@ int main()
 			verticies[3] = projection[size + 1 - i];
 
 			main_window.draw(create_face(verticies));
+
+		}
+
+
+
+
+
+		if (font_available) {
+
+			sf::String transform_info, axis_info = "Axis: ";
+
+			switch (transform_type)
+			{
+
+			case ROTATE:
+				transform_info = "Transform type: R \n";
+				break;
+
+			case SCALE:
+				transform_info = "Transform type: S \n";
+				break;
+
+			case TRANSLATE:
+				transform_info = "Transform type: T \n";
+				break;
+
+			}
+
+			bool all_transform = true;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_X)))
+			{
+				axis_info += 'X';
+				all_transform = false;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Y)))
+			{
+				axis_info += 'Y';
+				all_transform = false;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(TRANSFORM_Z)))
+			{
+				axis_info += 'Z';
+				all_transform = false;
+			}
+			if (all_transform)
+			{
+				axis_info += "XYZ";
+			}
+
+			sf::Text info_text(transform_info + axis_info, info_font, 20);
+
+			info_text.setPosition(20, 20);
+
+			main_window.draw(info_text);
 
 		}
 
