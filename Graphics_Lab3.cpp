@@ -148,7 +148,7 @@ int main()
 
 			}
 
-			if(main_event.type == sf::Event::MouseWheelScrolled)
+			if (main_event.type == sf::Event::MouseWheelScrolled)
 			{
 
 				bool all_transform = true;
