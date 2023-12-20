@@ -7,7 +7,7 @@
 int main()
 {
 
-    sf::RenderWindow main_window(sf::VideoMode(800, 600), "Graphics window");
+	sf::RenderWindow main_window(sf::VideoMode(800, 600), "Graphics window");
 
 	while (main_window.isOpen())
 	{
@@ -28,8 +28,6 @@ int main()
 
 	}
 
-	
+
 
 }
-
-
